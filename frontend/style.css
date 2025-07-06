@@ -1,0 +1,61 @@
+*{
+    margin: 0;
+    padding: 0;
+    /* box-sizing: border-box;  */
+    /* The width and height include content + padding + border */
+
+}
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #9eccf1;
+}
+.container{
+    padding: 5px;
+    display: flex;
+    width: 100%;
+    
+}
+.drawing-board{
+    width: 100%;
+    min-height: 100vh;
+    background-color: #fff;
+}
+.tools-board{
+    /* display: none; */
+    justify-self: center;
+    padding: 5px;
+    min-height: fit-content;
+}
+.option #size-slider{
+    height: 4pt;
+    width: 100%;
+}
+.color .options{
+    padding-top: 5pt;
+    display: flex;
+    gap: 5pt;
+    min-height: fit-content;
+    margin-bottom: 10pt;
+}
+ul{
+    list-style-type: none;
+}
+.color .options .option{
+    width: 10pt;
+    height: 10pt;
+    background-color: #fff;
+    border-radius: 50%;
+}
+
+.buttons button{
+    width: 100%;
+    margin-bottom: 3pt;
+    padding: 2pt;
+}
+.drawing-board canvas{
+    width: 100%;
+    height: 100%;
+}
