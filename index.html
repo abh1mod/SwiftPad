@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas Demo</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+      background-color: rgb(180, 202, 232);
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="myCanvas"></canvas>
+  <button id="toggleToolbar" style="position: absolute; top: 10px; padding: 15px; right: 10px; z-index: 10; font-size: larger;">Toggle Toolbar</button>
+  <div class="toolbar" style="position: absolute;
+      top: 80px;
+      display: block;
+      right: 10px;
+      width: 200px;
+      height: 800px;
+      /* color: yellowgreen; */
+      background-color: rgba(238, 238, 130, 0.5);
+      padding: 10px;
+      border-radius: 8px;
+      z-index: 10;">
+    <!-- <button id="drawCircle">Draw Circle</button> -->
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>
