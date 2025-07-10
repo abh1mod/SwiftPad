@@ -7,36 +7,45 @@ let toggleButton = document.getElementById("toggleToolbar");
 toggleButton.addEventListener("click", function() {
     let toolbar = document.querySelector(".toolbar");
     if (toolbar.style.display === "none" || toolbar.style.display === "") {
-        toolbar.style.display = "block";
+        toolbar.style.display = "flex";
     } else {
         toolbar.style.display = "none";
     }
 });
 
-ctx.beginPath();
-ctx.arc(400,400,200,0,Math.PI*2);
-ctx.lineWidth = 5;
-ctx.strokeStyle = "blue";
-ctx.stroke();
+let draw_color = "black";
+let draw_width = "5";
+let is_drawing = false;
 
-class Circle {
-    constructor(x, y, radius, fillColor) {
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
-        this.strokeColor = fillColor;
-        this.fillColor = fillColor;
-    }
+canvas.addEventListener("touchstart", start, false);
+canvas.addEventListener("touchmove", draw, false);
+canvas.addEventListener("mousedown", start, false);
+canvas.addEventListener("mousemove", draw, false);
+canvas.addEventListener("touchend", stop, false);
+canvas.addEventListener("mouseup", stop, false);
+canvas.addEventListener("mouseout", stop, false);
 
-    draw(ctx) {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = this.strokeColor;
+function start(e) {
+    is_drawing = true;
+    ctx.beginPath();
+    ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+    e.preventDefault();
+}   
+function draw(e) {
+    if (!is_drawing) return;
+    ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+    ctx.strokeStyle = draw_color;
+    ctx.lineWidth = draw_width;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.stroke();
+    e.preventDefault();
+}
+function stop(e) {
+    if(is_drawing) {
         ctx.stroke();
-        ctx.fillStyle = this.fillColor;
-        // ctx.fill();
+        ctx.closePath();
+        is_drawing = false;
     }
-} 
-let circle = new Circle(800, 800, 200, "blue", "lightblue");
-circle.draw(ctx);
+    e.preventDefault();
+}   
