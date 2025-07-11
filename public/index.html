@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas Demo</title>
+  <link rel="stylesheet" href="./style.css">
+  
+</head>
+<body>
+  <canvas id="myCanvas"></canvas>
+  <button id="toggleToolbar">Toggle Toolbar</button>
+  
+  <div class="toolbar" >
+    <button type="button" onclick="clearCanvas()" class="button">Clear</button>
+    <button type="button" onclick="undo_last()" class="button">Undo</button>
+    <div class = "color-picker" style="display: flex; gap: 10px;">
+      <div onclick="change_color(this)" class="color-field" style="background-color: red;"></div>
+      <div onclick="change_color(this)" class="color-field" style="background-color: green;"></div>
+      <div onclick="change_color(this)" class="color-field" style="background-color: yellow;"></div>
+      <div onclick="change_color(this)" class="color-field" style="background-color: blue;"></div>
+    </div>
+    <input type="color" onInput="draw_color = this.value" class="color-picker-input" value="#000000">
+    <input type="range" onInput="draw_width = this.value" class="brush-size" min="1" max="50" value="5">
+
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
