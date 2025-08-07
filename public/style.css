@@ -82,3 +82,16 @@ canvas {
     padding-left: 8px;
     padding-right: 8px;
 }
+
+.logo {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  max-width: fit-content;
+  pointer-events: none; /* Prevents interaction with the logo */
+}
+
+.logo img{
+  width: 10%;
+  height: 10%;
+}
