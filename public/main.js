@@ -1,22 +1,16 @@
 let toolbar = document.getElementById("toolbar");
 let canvas = document.getElementById("myCanvas");
-let zoomIn = document.getElementById("zoom-in");
-let zoomOut = document.getElementById("zoom-out");
-let resetZoom = document.getElementById("reset-zoom");
-
 let ctx = canvas.getContext("2d");
 
-let width = window.innerWidth - 8;  // 1280 
-let height = window.innerHeight - 5; // 665
+let width = window.innerWidth - 2;  // 1280 
+let height = window.innerHeight - 2; // 665
 const dpr = window.devicePixelRatio || 1;
 
-let width_orignal = width;
-let height_original = height;
 let is_drawing = false;
-
 
 let backgroundColor = '#1F1B24';
 let brushColor = "white";
+
 function reSizeCanvas(){
     canvas.style.width = width+"px";
     canvas.style.height = height+"px";
@@ -32,12 +26,21 @@ function reSizeCanvas(){
     //e = 0, f = 0: no translation.
 }
 
-document.getElementById("toggleToolbar").onclick = ()=>{
-    if(toolbar.style.display == "none"){
-        toolbar.style.display = "flex";
-    }
-    else toolbar.style.display = "none";
+const toggleBtn = document.getElementById('toggleToolbar');
+toggleBtn.onclick = () => {
+    toggleBtn.textContent = toggleBtn.textContent === '>' ? '<' : '>';
 }
+
+toggleBtn.addEventListener('click', () => {
+    const isHidden = toolbar.style.transform === 'translateX(160px)';
+    if (isHidden) {
+        toolbar.style.transform = 'translateX(0)';
+        toolbar.style.opacity = '1';
+    } else {
+        toolbar.style.transform = 'translateX(160px)';
+        toolbar.style.opacity = '0.9';
+    }
+});
 
 
 //Applicable on touch devices
@@ -84,7 +87,6 @@ function start(e) {
     const { x, y } = getCoordinates(e);
     ctx.beginPath();
     ctx.moveTo(x, y);
-    // send_to_socket(x, y, true);
     e.preventDefault();
 }
 
@@ -97,7 +99,6 @@ function draw(e) {
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.stroke();
-    // send_to_socket(x, y);
     e.preventDefault();
 }
 
