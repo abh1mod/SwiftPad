@@ -14,34 +14,6 @@ let width_orignal = width;
 let height_original = height;
 let is_drawing = false;
 
-  zoomIn.onclick = () => {
-    if (width >= width_orignal * 1.3) return;
-    width *= 1.05;
-    height *= 1.05;
-    if (Math.abs(width - width_orignal) < width_orignal * 0.04) {
-        width = width_orignal;
-        height = height_original;
-    }
-        reSizeCanvas();
-    };
-
-    zoomOut.onclick = () => {
-        if (width <= width_orignal * 0.8) return;
-        width *= 0.95;
-        height *= 0.95;
-        if (Math.abs(width - width_orignal) < width_orignal * 0.04) {
-            width = width_orignal;
-            height = height_original;
-        }
-
-        reSizeCanvas();
-    };
-
-    resetZoom.onclick = ()=>{
-        width = width_orignal;
-        height = height_original;
-        reSizeCanvas();
-    }
 
 let backgroundColor = '#1F1B24';
 let brushColor = "white";
