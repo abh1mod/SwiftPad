@@ -11,6 +11,8 @@ let is_drawing = false;
 let backgroundColor = '#1F1B24';
 let brushColor = "white";
 
+const socket = io();
+
 function reSizeCanvas(){
     canvas.style.width = width+"px";
     canvas.style.height = height+"px";
@@ -25,6 +27,53 @@ function reSizeCanvas(){
     //b = 0, c = 0: no skew.
     //e = 0, f = 0: no translation.
 }
+
+
+
+function sendDrawEvent(action, xCoordinate, yCoordinate) {
+    const payload = { action, xCoordinate, yCoordinate, color: brushColor, lineWidth: 2.5};
+    socket.emit('draw', payload);
+}
+
+socket.on('draw', (msg) => {
+    const { action, xCoordinate, yCoordinate, color, lineWidth } = msg || {};
+
+    if (action === 'start') {
+        incomingColor =  color || brushColor;
+        incomingLineWidth =  lineWidth || 2.5;
+    }
+
+    ctx.strokeStyle = incomingColor;
+    ctx.lineWidth = lineWidth;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    if (action === 'start') {
+        ctx.beginPath();
+        ctx.moveTo(xCoordinate, yCoordinate);
+        incomingIsDrawing = true;
+    } 
+    else if (action === 'draw') {
+        if (!incomingIsDrawing) {
+            ctx.beginPath();
+            ctx.moveTo(xCoordinate, yCoordinate);
+            incomingIsDrawing = true;
+        } 
+        else {
+            ctx.lineTo(xCoordinate, yCoordinate);
+            ctx.stroke();
+        }
+    } 
+    else if (action === 'stop') {
+        if (incomingIsDrawing) {
+            ctx.stroke();
+            ctx.closePath();
+            incomingIsDrawing = false;
+        }
+    }
+});
+
+
 
 const toggleBtn = document.getElementById('toggleToolbar');
 toggleBtn.onclick = () => {
@@ -87,6 +136,7 @@ function start(e) {
     const { x, y } = getCoordinates(e);
     ctx.beginPath();
     ctx.moveTo(x, y);
+    sendDrawEvent('start', x, y);
     e.preventDefault();
 }
 
@@ -99,6 +149,7 @@ function draw(e) {
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.stroke();
+    sendDrawEvent('draw', x, y);
     e.preventDefault();
 }
 
@@ -108,8 +159,8 @@ function stop(e) {
         ctx.closePath();
         is_drawing = false;
     }
+    sendDrawEvent('stop');
     e.preventDefault();
 }
-
 
 reSizeCanvas();   // whenever page reloads scale is set to original

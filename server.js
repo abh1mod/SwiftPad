@@ -17,8 +17,8 @@ io.on('connection', (socket) => {
   user_array.push(socket.id);
   console.log(`Connected users: ${user_array}`);
   socket.on('draw', (data) => {
-    socket.broadcast.emit('draw', { ...data, from: socket.id });  //including sender id so that drawing events
-   });                                                              //  doesn't come back to sender itself
+    socket.broadcast.emit('draw', data); 
+   });                                                              
 
 
 
