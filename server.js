@@ -7,6 +7,7 @@ const ip = require('ip');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
+
 let user_array = [];
 
 app.use(express.static('public'));
@@ -15,9 +16,10 @@ io.on('connection', (socket) => {
   console.log('A user connected');
   user_array.push(socket.id);
   console.log(`Connected users: ${user_array}`);
-  socket.on('message', (data) => {
-    socket.broadcast.emit('message', data);
-});
+  socket.on('draw', (data) => {
+    socket.broadcast.emit('draw', { ...data, from: socket.id });  //including sender id so that drawing events
+   });                                                              //  doesn't come back to sender itself
+
 
 
   // get disconnected user
