@@ -51,7 +51,9 @@ socket.on('draw', (msg) => {
     if (action === 'start') {
         incomingLineWidth =  lineWidth || 2.5;
     }
-
+    else if(action === 'changeBrushColor') {
+        brushColor = msg.color;
+    }
     ctx.strokeStyle = brushColor;
     ctx.lineWidth = lineWidth;
     ctx.lineCap = "round";
@@ -80,9 +82,7 @@ socket.on('draw', (msg) => {
             incomingIsDrawing = false;
         }
     }
-    else if(action === 'changeBrushColor') {
-        brushColor = msg.color;
-    }
+
 });
 
 
