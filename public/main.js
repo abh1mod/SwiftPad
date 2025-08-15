@@ -11,6 +11,10 @@ let is_drawing = false;
 let backgroundColor = '#1F1B24';
 let brushColor = "white";
 
+function changeBrushColor(color) {
+    brushColor = color;
+}
+
 const socket = io();
 
 function reSizeCanvas(){
