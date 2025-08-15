@@ -30,18 +30,24 @@ function reSizeCanvas(){
 
 
 
-function sendDrawEvent(action, xCoordinate, yCoordinate) {
-    const payload = { action, xCoordinate, yCoordinate, color: brushColor, lineWidth: 2.5};
+function sendDrawEvent(action, x, y) {
+    const payload = { action, color: brushColor, lineWidth: 2.5};
+    payload.xNorm = x/width;
+    payload.yNorm = y/height;
+
     socket.emit('draw', payload);
 }
 
 socket.on('draw', (msg) => {
-    const { action, xCoordinate, yCoordinate, color, lineWidth } = msg || {};
+    const { action, xNorm, yNorm, color, lineWidth } = msg || {};
+    const xCoordinate = xNorm*width;
+    const yCoordinate = yNorm*height;
 
     if (action === 'start') {
         incomingColor =  color || brushColor;
         incomingLineWidth =  lineWidth || 2.5;
     }
+
 
     ctx.strokeStyle = incomingColor;
     ctx.lineWidth = lineWidth;
