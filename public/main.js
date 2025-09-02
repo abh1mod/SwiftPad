@@ -2,10 +2,14 @@ let toolbar = document.getElementById("toolbar");
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
 let eraser = document.getElementById("eraser")
+let clearBtn = document.getElementById("clear-btn")
+let undoBtn = document.getElementById("undo-btn")
 
 let width = window.innerWidth - 2;  // 1280 
 let height = window.innerHeight - 2; // 665
 const dpr = window.devicePixelRatio || 1;
+
+const socket = io();
 
 let is_drawing = false;
 
@@ -30,7 +34,11 @@ eraser.onclick = ()=>{
     changeBrushColor(brushColor)
 }
 
-const socket = io();
+clearBtn.onclick = () =>{
+    reSizeCanvas();
+    sendDrawEvent('clearCanvas');
+}
+
 
 function reSizeCanvas(){
     canvas.style.width = width+"px";
@@ -69,7 +77,13 @@ socket.on('draw', (msg) => {
     }
     else if(action === 'changeBrushSize'){
         brushSize = msg.lineWidth;
-    }   
+    }  
+    else if(action === 'clearCanvas'){
+        reSizeCanvas();
+    }
+    else if(action === 'toggleToolbar'){
+        toggleToolbar();
+    }
 
     ctx.strokeStyle = brushColor;
     ctx.lineWidth = brushSize;
@@ -105,11 +119,9 @@ socket.on('draw', (msg) => {
 
 
 const toggleBtn = document.getElementById('toggleToolbar');
-toggleBtn.onclick = () => {
-    toggleBtn.textContent = toggleBtn.textContent === '>' ? '<' : '>';
-}
 
-toggleBtn.addEventListener('click', () => {
+function toggleToolbar(){
+    toggleBtn.textContent = toggleBtn.textContent === '>' ? '<' : '>';
     const isHidden = toolbar.style.transform === 'translateX(160px)';
     if (isHidden) {
         toolbar.style.transform = 'translateX(0)';
@@ -118,7 +130,14 @@ toggleBtn.addEventListener('click', () => {
         toolbar.style.transform = 'translateX(160px)';
         toolbar.style.opacity = '0.9';
     }
-});
+}
+
+toggleBtn.onclick = () => {
+    toggleToolbar()
+    sendDrawEvent('toggleToolbar')
+}
+
+// toggleBtn.addEventListener('click', toggleToolbar);
 
 
 //Applicable on touch devices
