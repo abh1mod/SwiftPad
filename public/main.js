@@ -15,15 +15,19 @@ let brushSize = 5;
 
 function changeBrushColor(color) {
     brushColor = color;
-    sendDrawEvent('changeBrushColor', null, null, color);
+    sendDrawEvent('changeBrushColor', null, null, color, null);
 }
 
 function changeBrushSize(value){
     brushSize = value;
+    sendDrawEvent('changeBrushSize',null, null, null, brushSize);
 }
 
 eraser.onclick = ()=>{
-    brushColor ='#1F1B24';
+    // let tempBrushSize = brushSize
+    // brushSize = 20
+    brushColor = backgroundColor;
+    changeBrushColor(brushColor)
 }
 
 const socket = io();
@@ -43,10 +47,8 @@ function reSizeCanvas(){
     //e = 0, f = 0: no translation.
 }
 
-
-
-function sendDrawEvent(action, x, y, color) {
-    const payload = { action, lineWidth: 2.5, color};
+function sendDrawEvent(action, x, y, color, lineWidth) {
+    const payload = { action, lineWidth, color};
     payload.xNorm = x/width;   // Coordinate normalized
     payload.yNorm = y/height;
 
@@ -65,8 +67,12 @@ socket.on('draw', (msg) => {
     else if(action === 'changeBrushColor') {
         brushColor = msg.color;
     }
+    else if(action === 'changeBrushSize'){
+        brushSize = msg.lineWidth;
+    }   
+
     ctx.strokeStyle = brushColor;
-    ctx.lineWidth = lineWidth;
+    ctx.lineWidth = brushSize;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
 
