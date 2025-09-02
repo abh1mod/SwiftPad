@@ -33,12 +33,17 @@ canvas {
   font-weight: 700;
 }
 
+.eraser{
+  width: 22px;
+  cursor: pointer;
+}
+
 .toolbar{
     position: fixed;
       top: 72px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
       right: 20px; /* positioned just to the left of the arrow button on the right */
       width: 110px; /* minimized width */
       height: 280px;
@@ -59,7 +64,7 @@ canvas {
 .brush-size{
     position: absolute;
     left: -40px;
-    top: 200px;
+    top: 210px;
     height: 8px;
     width: 120px;
     transform: rotate(-90deg);

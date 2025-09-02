@@ -1,6 +1,7 @@
 let toolbar = document.getElementById("toolbar");
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
+let eraser = document.getElementById("eraser")
 
 let width = window.innerWidth - 2;  // 1280 
 let height = window.innerHeight - 2; // 665
@@ -10,10 +11,19 @@ let is_drawing = false;
 
 let backgroundColor = '#1F1B24';
 let brushColor = "white";
+let brushSize = 5;
 
 function changeBrushColor(color) {
     brushColor = color;
     sendDrawEvent('changeBrushColor', null, null, color);
+}
+
+function changeBrushSize(value){
+    brushSize = value;
+}
+
+eraser.onclick = ()=>{
+    brushColor ='#1F1B24';
 }
 
 const socket = io();
@@ -28,7 +38,7 @@ function reSizeCanvas(){
     console.log(width, height);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     //ctx.setTransform(a, b, c, d, e, f);
-    //a = dpr, d = dpr: scales the X and Y axes by the device pixel ratio.
+    //a = dpr, d = dpr: scales the X and Y axes by the device pixel ratio
     //b = 0, c = 0: no skew.
     //e = 0, f = 0: no translation.
 }
@@ -37,11 +47,12 @@ function reSizeCanvas(){
 
 function sendDrawEvent(action, x, y, color) {
     const payload = { action, lineWidth: 2.5, color};
-    payload.xNorm = x/width;
+    payload.xNorm = x/width;   // Coordinate normalized
     payload.yNorm = y/height;
 
     socket.emit('draw', payload);
 }
+
 
 socket.on('draw', (msg) => {
     const { action, xNorm, yNorm, lineWidth, color } = msg || {};
@@ -157,7 +168,7 @@ function draw(e) {
     const { x, y } = getCoordinates(e);
     ctx.lineTo(x, y);
     ctx.strokeStyle = brushColor;
-    ctx.lineWidth = 2.5;
+    ctx.lineWidth = brushSize;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.stroke();
