@@ -9,6 +9,9 @@ let width = window.innerWidth - 2;  // 1280
 let height = window.innerHeight - 2; // 665
 const dpr = window.devicePixelRatio || 1;
 
+let restore_array = [];
+const stack_size = 15;
+
 const socket = io();
 
 let is_drawing = false;
@@ -28,8 +31,6 @@ function changeBrushSize(value){
 }
 
 eraser.onclick = ()=>{
-    // let tempBrushSize = brushSize
-    // brushSize = 20
     brushColor = backgroundColor;
     changeBrushColor(brushColor)
 }
@@ -38,6 +39,20 @@ clearBtn.onclick = () =>{
     reSizeCanvas();
     sendDrawEvent('clearCanvas');
 }
+
+function undo(){
+    if(restore_array.length > 1){
+        restore_array.pop();
+        ctx.putImageData(restore_array[restore_array.length - 1], 0, 0);
+    } else if(restore_array.length === 1) {
+        restore_array.pop();
+    }
+}
+
+undoBtn.onclick = () => {
+    undo();
+    sendDrawEvent('undo');
+};
 
 
 function reSizeCanvas(){
@@ -49,10 +64,22 @@ function reSizeCanvas(){
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     console.log(width, height);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    restore_array = [];
+    saveCanvasState();
+
     //ctx.setTransform(a, b, c, d, e, f);
     //a = dpr, d = dpr: scales the X and Y axes by the device pixel ratio
     //b = 0, c = 0: no skew.
     //e = 0, f = 0: no translation.
+}
+
+function saveCanvasState() {
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    restore_array.push(imageData);
+    if (restore_array.length > stack_size) {
+        restore_array.shift();
+    }
 }
 
 function sendDrawEvent(action, x, y, color, lineWidth) {
@@ -84,6 +111,9 @@ socket.on('draw', (msg) => {
     else if(action === 'toggleToolbar'){
         toggleToolbar();
     }
+    else if(action === 'undo'){
+        undo();
+    }
 
     ctx.strokeStyle = brushColor;
     ctx.lineWidth = brushSize;
@@ -111,6 +141,7 @@ socket.on('draw', (msg) => {
             ctx.stroke();
             ctx.closePath();
             incomingIsDrawing = false;
+            saveCanvasState();
         }
     }
 
@@ -206,9 +237,11 @@ function stop(e) {
         ctx.stroke();
         ctx.closePath();
         is_drawing = false;
+
+        saveCanvasState();
     }
     sendDrawEvent('stop');
-    e.preventDefault();
+    e.preventDefault(); 
 }
 
 reSizeCanvas();   // whenever page reloads scale is set to original
